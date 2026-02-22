@@ -52,3 +52,22 @@ def create_order(order: Order):
 @app.get("/orders")
 def get_orders():
     return orders_db
+
+# Endpoint D: Simulate Payment
+@app.post("/pay/{order_id}")
+async def simulate_payment(order_id: str):
+    # 1. Search for the order
+    for order in orders_db:
+        if order.id == order_id:
+            
+            # 2. Simulate waiting for a bank response (5 seconds)
+            # 'await' means "pause this function here, but keep the server running for others"
+            await asyncio.sleep(5)
+            
+            # 3. Update the status
+            order.status = "paid"
+            
+            return {"message": "Payment Successful!", "order": order}
+    
+    # If the loop finishes and we didn't find the ID
+    return {"error": "Order not found"}
