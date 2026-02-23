@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import MerchantForm from './components/MerchantForm';
 import OrderList from './components/OrderList';
 
@@ -16,11 +16,6 @@ function App() {
       console.error("Failed to fetch orders", error);
     }
   };
-
-  // 3. INITIALIZATION: Run fetchOrders once when page loads
-  useEffect(() => {
-    fetchOrders();
-  }, []);
 
   // 4. ACTION: Function to handle the "Pay" button click
   const handlePay = async (orderId) => {
