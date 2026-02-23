@@ -5,6 +5,7 @@ const MerchatForm = () => {
     const [name, setName] = useState("");
     const [paymentMethods, setPaymentMethods] = useState("mobile");
     const [configDetails, setConfigDetails] = useState("");
+    const [lastMerchant, setLastMerchant] = useState(null);
 
     // the logic , function that handle submission
     const handleSubmit = async (e) => {
@@ -27,8 +28,8 @@ const MerchatForm = () => {
                 body: JSON.stringify(newMerchant),
             });
             if (response.ok) {
-                // handle success
-                console.log("Merchant created successfully");
+                const result = await response.json();
+                setLastMerchant(result.data);
                 setName("");
                 setPaymentMethods("mobile");
                 setConfigDetails("");
@@ -99,6 +100,20 @@ const MerchatForm = () => {
                     Save Settings
                 </button>
             </form>
+
+            {lastMerchant && (
+                <div className="mt-4 bg-gray-50 p-4 rounded-lg border">
+                    <h3 className="text-sm font-semibold mb-2">Last Saved Merchant</h3>
+                    <p className="text-sm text-gray-800">{lastMerchant.name}</p>
+                    <p className="text-xs text-gray-500">ID: {lastMerchant.id}</p>
+                    <p className="text-xs text-gray-500">
+                        Method: {lastMerchant.preferred_payment_method}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                        Config: {lastMerchant.config_details}
+                    </p>
+                </div>
+            )}
         </div>
 
     );
