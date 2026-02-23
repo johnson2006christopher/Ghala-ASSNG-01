@@ -1,10 +1,11 @@
 # 1. IMPORTS
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional
 import uuid
 import asyncio
+import random
 
 # 2. APP INITIALIZATION
 app = FastAPI(title="Ghala Simulation API")
@@ -31,17 +32,17 @@ orders_db = []
 # 4. DATA MODELS (Schemas)
 # This defines the "Shape" of the data we expect.
 class MerchantConfig(BaseModel):
-    id: str = str(uuid.uuid4()) # Auto-generate a unique ID
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
-    preferred_payment_method: str # e.g., "mobile", "card"
-    config_details: str # e.g., "Paybill 12345"
+    preferred_payment_method: str
+    config_details: str
 
 class Order(BaseModel):
-    id: str = str(uuid.uuid4())
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     product_name: str
     total_amount: float
     merchant_id: str
-    status: str = "pending" # Default status is pending
+    status: str = "pending"
 
 # 5. API ENDPOINTS (The Logic)
 
@@ -78,11 +79,13 @@ async def simulate_payment(order_id: str):
             # 2. Simulate waiting for a bank response (5 seconds)
             # 'await' means "pause this function here, but keep the server running for others"
             await asyncio.sleep(5)
-            
-            # 3. Update the status
-            order.status = "paid"
-            
-            return {"message": "Payment Successful!", "order": order}
+
+            # 3. Randomly decide if payment is successful or failed
+            outcome = random.choice(["paid", "failed"])
+            order.status = outcome
+
+            message = "Payment Successful!" if outcome == "paid" else "Payment Failed"
+            return {"message": message, "order": order}
     
     # If the loop finishes and we didn't find the ID
     return {"error": "Order not found"}
