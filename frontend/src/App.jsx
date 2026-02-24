@@ -3,8 +3,8 @@ import MerchantForm from './components/MerchantForm';
 import OrderList from './components/OrderList';
 
 function App() {
-  // 1. STATE: Store the list of orders here. Start with empty array.
   const [orders, setOrders] = useState([]);
+  const [activeMerchant, setActiveMerchant] = useState(null);
 
   // 2. ACTION: Function to get orders from Backend
   const fetchOrders = async () => {
@@ -49,17 +49,22 @@ function App() {
           
           {/* Left Column: Form */}
           <div className="md:col-span-1">
-            <MerchantForm />
+            <MerchantForm onMerchantSaved={setActiveMerchant} />
             
             {/* Bonus: Button to create a mock order easily */}
             <div className="mt-4 bg-white p-4 rounded-lg shadow text-center">
               <p className="text-sm text-gray-500 mb-2">Testing Tools:</p>
               <button 
                 onClick={async () => {
+                   if (!activeMerchant) {
+                     alert("Please save a merchant first.");
+                     return;
+                   }
+                   const randomAmount = Math.floor(Math.random() * (50000 - 100 + 1)) + 100;
                    await fetch('http://127.0.0.1:8000/order', {
                      method: 'POST',
                      headers: {'Content-Type': 'application/json'},
-                     body: JSON.stringify({ product_name: "Test Item", total_amount: 100, merchant_id: "test" })
+                     body: JSON.stringify({ product_name: "Test Item", total_amount: randomAmount, merchant_id: activeMerchant.id })
                    });
                    fetchOrders();
                 }}
