@@ -53,9 +53,12 @@ def read_root():
 # Endpoint A: Save Merchant Config
 @app.post("/merchant")
 def save_merchant(merchant: MerchantConfig):
-    # Save the incoming data to our fake database
     merchants_db.append(merchant)
     return {"message": "Merchant saved successfully", "data": merchant}
+
+@app.get("/merchants")
+def get_merchants():
+    return merchants_db
 
 # Endpoint B: Create Order
 @app.post("/order")
