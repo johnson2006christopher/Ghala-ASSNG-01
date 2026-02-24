@@ -35,7 +35,7 @@ const OrderList = ({ orders, onPay }) => {
                 Order ID: {order.id.substring(0, 8)}...
               </p>
               <p className="text-green-600 font-semibold mt-1">
-                ${order.total_amount}
+                TSh {order.total_amount}
               </p>
             </div>
 
