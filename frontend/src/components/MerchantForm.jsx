@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const MerchatForm = () => {
+const MerchatForm = ({ onMerchantSaved }) => {
     // the states we need to track the user types
     const [name, setName] = useState("");
     const [paymentMethods, setPaymentMethods] = useState("mobile");
@@ -30,6 +30,9 @@ const MerchatForm = () => {
             if (response.ok) {
                 const result = await response.json();
                 setLastMerchant(result.data);
+                if (onMerchantSaved) {
+                    onMerchantSaved(result.data);
+                }
                 setName("");
                 setPaymentMethods("mobile");
                 setConfigDetails("");
